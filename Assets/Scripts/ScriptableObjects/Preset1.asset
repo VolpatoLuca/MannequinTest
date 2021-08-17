@@ -22,20 +22,29 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      inSlope: 0.0475942
+      outSlope: 0.0475942
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.036373124
+    - serializedVersion: 3
+      time: 0.62753665
+      value: 0.29164258
+      inSlope: 1.2951186
+      outSlope: 1.2951186
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.033314224
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      inSlope: 0.36395526
+      outSlope: 0.36395526
+      tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.10009237
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -76,7 +85,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   farColor: {r: 0, g: 0, b: 0, a: 0}
-  nearColor: {r: 0.28503236, g: 0, b: 0.49056602, a: 0}
+  nearColor: {r: 0.15426417, g: 0, b: 0.26415092, a: 0}
   colorCurve:
     serializedVersion: 2
     m_Curve:
