@@ -1,54 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Jobs;
 
-public class FloorCube : MonoBehaviour
+public class FloorCubeOld : MonoBehaviour
 {
-    public static List<Transform> interactors = new List<Transform>();
-
-    public bool isActive;
-
-    public CubeSettings[] settings;
     private CubeSettings currentSettings;
-    public static int settingsIndex = 0;
-    private int currentIndex = 0;
-    private Vector3 topPosition;
-    private float randomFrequence;
-    private float pingPongT;
+
+    private Vector3 nearPosition;
+    private float smallestDistance;
+    private float distanceT = 0;
     private float checkTimer;
 
+    private float randomFrequence;
+    private float pingPongT;
+
     private Material mat;
-    private int matColorDistanceHash;
-    private int matFarColortHash;
-    private int matNearColorHash;
-    private int matFarHeighttHash;
+
 
     private void Start()
     {
+        currentSettings = GameManager.currentSetting;
+        CheckForSettingsChange();
         mat = GetComponent<MeshRenderer>().material;
         randomFrequence = Random.Range(1f, 2f);
-        matColorDistanceHash = Shader.PropertyToID("_ColorDistance");
-        matFarColortHash = Shader.PropertyToID("_FarColor");
-        matNearColorHash = Shader.PropertyToID("_NearColor");
-        matFarHeighttHash = Shader.PropertyToID("_FarHeight");
-        ChangeSettings();
+        pingPongT = 1;
+        ResetToDefault();
     }
 
-    public void ChangeSettings()
-    {
-        currentSettings = settings[settingsIndex];
-        ResetToDefault();
-        mat.SetColor(matFarColortHash, currentSettings.farColor);
-        mat.SetColor(matNearColorHash, currentSettings.nearColor);
-        mat.SetFloat(matFarHeighttHash, currentSettings.farHeight);
-    }
 
     private void ResetToDefault()
     {
         Vector3 pos = transform.position;
         pos.y = currentSettings.farHeight;
         transform.position = pos;
-        mat.SetFloat(matColorDistanceHash, 0);
+        mat.color = GetColor();
         transform.localScale = new Vector3(currentSettings.farScale, currentSettings.farScale, currentSettings.farScale);
     }
 
@@ -61,20 +47,25 @@ public class FloorCube : MonoBehaviour
             return;
 
         //calculate Distance based on near height, not current
-        topPosition = transform.position;
-        topPosition.y = currentSettings.nearHeight;
+        nearPosition = transform.position;
+        nearPosition.y = currentSettings.nearHeight;
 
         Transform closestObj = GetClosestObj();
 
-        if (Vector3.Distance(closestObj.position, topPosition) < currentSettings.maxDistance + 4f)
+        smallestDistance = Vector3.Distance(closestObj.position, nearPosition);
+
+        bool isClosestObjNear = smallestDistance < currentSettings.maxDistance + 4f;
+        if (isClosestObjNear)
         {
-            UpdatePosColorScale(closestObj);
+            distanceT = GetDistanceT(closestObj.position);
+
+            UpdatePosColorScale();
 
             Tremble(closestObj);
         }
         else
         {
-            checkTimer = 0.4f;
+            checkTimer = Mathf.InverseLerp(0, currentSettings.maxDistance, smallestDistance) / 2;
         }
     }
 
@@ -82,7 +73,8 @@ public class FloorCube : MonoBehaviour
     {
         if (currentSettings.isTrembling)
         {
-            if (GetDistanceT(closestO, topPosition) > 0.9f)
+            bool isTooClose = distanceT > 0.9f;
+            if (isTooClose)
             {
                 return;
             }
@@ -93,6 +85,7 @@ public class FloorCube : MonoBehaviour
             smoothMultiplier /= 2;
             smoothMultiplier += 0.5f;
             pingPongT += Time.deltaTime * randomFrequence * currentSettings.trembleFrequency * smoothMultiplier;
+
             //Position
             float heightOffset = Mathf.PingPong(pingPongT, currentSettings.trembleAmount * 2) - currentSettings.trembleAmount;
             Vector3 pos = transform.position;
@@ -113,12 +106,13 @@ public class FloorCube : MonoBehaviour
     {
         float minDistance = float.PositiveInfinity;
         Transform obj = null;
-        foreach (var i in interactors)
+        foreach (var i in GameManager.interactors)
         {
-            if (Vector3.Distance(topPosition, i.position) < minDistance)
+            float interactorDistance = Vector3.Distance(nearPosition, i.position);
+            if (interactorDistance < minDistance)
             {
                 obj = i;
-                minDistance = Vector3.Distance(topPosition, i.position);
+                minDistance = interactorDistance;
             }
         }
         return obj;
@@ -126,41 +120,36 @@ public class FloorCube : MonoBehaviour
 
     private void CheckForSettingsChange()
     {
-        if (currentIndex != settingsIndex)
+        if (currentSettings != GameManager.currentSetting)
         {
-            if (settingsIndex >= settings.Length)
-                settingsIndex = 0;
-            currentIndex = settingsIndex;
-            ChangeSettings();
+            currentSettings = GameManager.currentSetting;
+            ResetToDefault();
         }
     }
 
-    private void UpdatePosColorScale(Transform closestO)
+    private void UpdatePosColorScale()
     {
-        float t;
-        t = GetDistanceT(closestO, topPosition);
-
         //Position
-        float posT = currentSettings.heightCurve.Evaluate(t);
+        float posT = currentSettings.heightCurve.Evaluate(distanceT);
         float height = Mathf.Lerp(currentSettings.farHeight, currentSettings.nearHeight, posT);
         Vector3 pos = transform.position;
         pos.y = height;
         transform.position = pos;
 
         //Color
-        float colorT = currentSettings.colorCurve.Evaluate(t);
-        mat.SetFloat(matColorDistanceHash, colorT);
+
+        mat.color = GetColor();
 
         //Scale
-        float scaleT = currentSettings.scaleCurve.Evaluate(t);
+        float scaleT = currentSettings.scaleCurve.Evaluate(distanceT);
         float scale;
         scale = Mathf.Lerp(currentSettings.farScale, currentSettings.nearScale, scaleT);
         transform.localScale = new Vector3(scale, scale, scale);
     }
 
-    private float GetDistanceT(Transform o, Vector3 topPosition)
+    private float GetDistanceT(Vector3 closestObj)
     {
-        float t = Mathf.Clamp(Vector3.Distance(o.position, topPosition), currentSettings.minDistance, currentSettings.maxDistance);
+        float t = Mathf.Clamp(Vector3.Distance(closestObj, nearPosition), currentSettings.minDistance, currentSettings.maxDistance);
         t -= currentSettings.minDistance;
         t /= currentSettings.maxDistance - currentSettings.minDistance;
         t = 1 - t;
@@ -170,5 +159,10 @@ public class FloorCube : MonoBehaviour
     private float Remap(float value, float from1, float to1, float from2, float to2)
     {
         return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
+    }
+
+    private Color GetColor()
+    {
+        return Color.Lerp(currentSettings.farColor, currentSettings.nearColor, currentSettings.colorCurve.Evaluate(distanceT));
     }
 }

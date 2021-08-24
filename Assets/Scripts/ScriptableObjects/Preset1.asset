@@ -85,7 +85,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   farColor: {r: 0, g: 0, b: 0, a: 0}
-  nearColor: {r: 0.15426417, g: 0, b: 0.26415092, a: 0}
+  nearColor: {r: 0.30114698, g: 0, b: 0.5188679, a: 0}
   colorCurve:
     serializedVersion: 2
     m_Curve:
@@ -120,5 +120,5 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   isTrembling: 1
-  trembleAmount: 1
-  trembleFrequency: 0.36
+  trembleAmount: 0.659
+  trembleFrequency: 0.64

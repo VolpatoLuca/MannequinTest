@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Preset4
   m_EditorClassIdentifier: 
   minDistance: 1.5
-  maxDistance: 3.2
-  farHeight: 2.38
+  maxDistance: 2.5
+  farHeight: 1.74
   nearHeight: 0
   heightCurve:
     serializedVersion: 2
@@ -22,25 +22,25 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  farScale: 0
+  farScale: 1
   nearScale: 1
   scaleCurve:
     serializedVersion: 2
@@ -66,7 +66,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  farColor: {r: 0, g: 1, b: 0.9193516, a: 0}
+  farColor: {r: 0, g: 0.819211, b: 1, a: 0}
   nearColor: {r: 0.09710693, g: 1, b: 0, a: 0}
   colorCurve:
     serializedVersion: 2
@@ -74,24 +74,24 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: -0.05280323
+      outSlope: -0.05280323
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.092156865
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2.8635604
+      outSlope: 2.8635604
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.05098039
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  isTrembling: 0
-  trembleAmount: 0
-  trembleFrequency: 0
+  isTrembling: 1
+  trembleAmount: 0.1
+  trembleFrequency: 0.04

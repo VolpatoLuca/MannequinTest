@@ -6,12 +6,10 @@ public class Interactor : MonoBehaviour
 {
     void OnEnable()
     {
-        FloorCube.interactors.Add(transform);
-        FloorShader.interactors.Add(transform);
+        GameManager.interactors.Add(transform);
     }
     void OnDisable()
     {
-        FloorCube.interactors.Remove(transform);
-        FloorShader.interactors.Remove(transform);
+        GameManager.interactors.Remove(transform);
     }
 }

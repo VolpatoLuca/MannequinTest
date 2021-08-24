@@ -19,7 +19,7 @@ public class CubeSettings : ScriptableObject
     public AnimationCurve colorCurve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1));
     [Space]
     public bool isTrembling = false;
-    [Range(0,1)]
+    [Range(0.1f,1)]
     public float trembleAmount;
     [Range(0,2)]
     public float trembleFrequency;
